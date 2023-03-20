@@ -1,54 +1,78 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
+import 'package:phone_book/utils/contants.dart';
 
-class CustomRow extends StatelessWidget {
+class CustomRow extends StatefulWidget {
   CustomRow({
     super.key,
     required this.width,
     required this.backgroundColor,
-    required this.iconData, required this.text,
+    required this.iconData,
+    required this.customWidget,
   });
 
   final double width;
   final Color backgroundColor;
   final IconData iconData;
-  final String text;
+  final Widget customWidget;
 
   @override
+  State<CustomRow> createState() => _CustomRowState();
+}
+
+class _CustomRowState extends State<CustomRow> {
+  @override
   Widget build(BuildContext context) {
-    return IntrinsicHeight(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            height: width / 8,
-            width: width / 8,
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            child: Icon(iconData),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Container(
+          height: widget.width / 8,
+          width: widget.width / 8,
+          decoration: BoxDecoration(
+            color: widget.backgroundColor,
+            borderRadius: BorderRadius.circular(15.0),
           ),
-          SizedBox(
-            width: width / 20,
+          child: Icon(widget.iconData),
+        ),
+        SizedBox(
+          width: widget.width / 20,
+        ),
+        SizedBox(
+          height: widget.width / 6,
+          child: VerticalDivider(
+            color: Colors.grey.withOpacity(0.5),
+            thickness: 1.7,
           ),
-          SizedBox(
-            height: width / 6,
-            child: VerticalDivider(
-              color: Colors.grey.withOpacity(0.5),
-              thickness: 1.7,
-            ),
-          ),
-          SizedBox(
-            width: width / 20,
-          ),
-          Text(
-            text,
-            style: TextStyle(fontSize: width / 20),
-          )
-        ],
-      ),
+        ),
+        SizedBox(
+          width: widget.width / 20,
+        ),
+        Flexible(
+          child: widget.customWidget,
+        ),
+      ],
     );
   }
 }
+
+
+// !isEditingMode
+//             ? Text(
+//                 widget.text,
+//                 style: TextStyle(fontSize: widget.width / 20),
+//               )
+//             : TextField(
+//                 autofocus: true,
+//                 onSubmitted: (value) {
+//                   setState(() {
+//                     isEditingMode = false;
+//                     widget.text = value;
+//                   });
+//                 },
+//                 keyboardType: widget.inputType,
+//                 decoration: InputDecoration(
+//                   hintText: widget.hintText,
+//                 ),
+//               ),

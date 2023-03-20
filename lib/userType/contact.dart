@@ -3,6 +3,4 @@ class Contact{
   String? name;
   String? mobile;
   String? email;
-  DateTime? birthday;
-  DateTime? created;
 }
