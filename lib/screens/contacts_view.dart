@@ -20,8 +20,8 @@ class _ContactsPageState extends State<ContactsPage> {
 
     return Column(
       children: [
-        Container(
-          margin: EdgeInsets.symmetric(
+        Padding(
+          padding: EdgeInsets.symmetric(
             horizontal: screenWidth / 20,
             vertical: screenWidth / 20,
           ),
@@ -56,11 +56,13 @@ class _ContactsPageState extends State<ContactsPage> {
             ),
             child: ListView.separated(
               itemCount: 20,
+              physics: BouncingScrollPhysics(),
               itemBuilder: ((context, index) {
                 return CustomListView(
                   screenWidth: screenWidth,
                   iconColor: Colors.white,
                   iconData: Icons.star_border,
+                  iconOnTap: () {},
                 );
               }),
               separatorBuilder: (BuildContext context, int index) {

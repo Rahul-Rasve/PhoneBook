@@ -54,11 +54,13 @@ class _FavoritesPageState extends State<FavoritesPage> {
             ),
             child: ListView.separated(
               itemCount: 20,
+              physics: BouncingScrollPhysics(),
               itemBuilder: ((context, index) {
                 return CustomListView(
                   screenWidth: screenWidth,
-                  iconData: Icons.star,
-                  iconColor: Colors.red,
+                  iconData: Icons.delete_rounded,
+                  iconColor: Colors.white,
+                  iconOnTap: () {},
                 );
               }),
               separatorBuilder: (BuildContext context, int index) {

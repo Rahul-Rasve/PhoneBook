@@ -7,12 +7,15 @@ class CustomListView extends StatelessWidget {
   const CustomListView({
     super.key,
     required this.screenWidth,
-    required this.iconData, required this.iconColor,
+    required this.iconData,
+    required this.iconColor,
+    required this.iconOnTap,
   });
 
   final double screenWidth;
   final IconData iconData;
   final Color iconColor;
+  final VoidCallback iconOnTap;
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +49,22 @@ class CustomListView extends StatelessWidget {
           ),
         ),
       ),
-      trailing: IconButton(
-        tooltip: 'add contacts to favorite',
-        onPressed: () {},
-        icon: Icon(
-          iconData,
-          color: iconColor,
+      trailing: SizedBox(
+        height: screenWidth / 7,
+        width: screenWidth / 7,
+        child: Material(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            radius: 40,
+            onTap: () => iconOnTap,
+            splashColor: Colors.grey.withOpacity(0.3),
+            child: Icon(
+              iconData,
+              color: iconColor,
+            ),
+          ),
         ),
       ),
     );
