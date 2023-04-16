@@ -1,0 +1,94 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'database_helper.dart';
+import 'contact.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  List<Contact> _contacts = [];
+
+  // Pick an image from the gallery and save it to the database
+  Future<void> _pickAndSaveImage() async {
+    final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
+    if (pickedFile == null) return;
+
+    // Read the image file data as a Uint8List
+    final bytes = await pickedFile.readAsBytes();
+    final image = Uint8List.fromList(bytes);
+
+    // Create a new contact with the image data and other details
+    final contact = Contact(
+      photo: image,
+      name: 'John Doe',
+      mobile: '555-555-1234',
+      email: 'john.doe@example.com',
+    );
+
+    // Insert the contact into the database
+    final id = await DatabaseHelper.instance.insert(contact);
+    print('Inserted contact with id: $id');
+
+    // Query all contacts and update the UI
+    _queryContacts();
+  }
+
+  // Retrieve all contacts from the database
+  Future<void> _queryContacts() async {
+    final contacts = await DatabaseHelper.instance.queryAllRows();
+    setState(() {
+      _contacts = contacts;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _queryContacts();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Contacts'),
+      ),
+      body: ListView.builder(
+        itemCount: _contacts.length,
+        itemBuilder: (context, index) {
+          final contact = _contacts[index];
+          return ListTile(
+            leading: contact.photo != null ? Image.memory(contact.photo!) : null,
+            title: Text(contact.name),
+            subtitle: Text(contact.mobile),
+            trailing: Text(contact.email),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _pickAndSaveImage,
+        tooltip: 'Add Contact',
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}

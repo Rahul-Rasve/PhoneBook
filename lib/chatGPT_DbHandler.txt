@@ -1,0 +1,80 @@
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+import 'contact.dart';
+
+class DatabaseHelper {
+  // Define the database name and version
+  static final _databaseName = 'contacts.db';
+  static final _databaseVersion = 1;
+
+  // Define the table name and column names
+  static final table = 'contacts';
+  static final columnId = 'id';
+  static final columnPhotoUrl = 'photoUrl';
+  static final columnName = 'name';
+  static final columnMobile = 'mobile';
+  static final columnEmail = 'email';
+
+  // Make the constructor private
+  DatabaseHelper._privateConstructor();
+  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+
+  // Define a reference to the database
+  static Database _database;
+
+  // Define a getter for the database
+  Future<Database> get database async {
+    if (_database != null) return _database;
+    _database = await _initDatabase();
+    return _database;
+  }
+
+  // Initialize the database
+  _initDatabase() async {
+    String path = join(await getDatabasesPath(), _databaseName);
+    return await openDatabase(path,
+        version: _databaseVersion, onCreate: _onCreate);
+  }
+
+  // Define the SQL statement to create the table
+  Future _onCreate(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE $table (
+        $columnId INTEGER PRIMARY KEY,
+        $columnPhotoUrl TEXT,
+        $columnName TEXT,
+        $columnMobile TEXT,
+        $columnEmail TEXT
+      )
+      ''');
+  }
+
+  // Insert a new contact into the database
+  Future<int> insert(Contact contact) async {
+    Database db = await instance.database;
+    return await db.insert(table, contact.toMap());
+  }
+
+  // Retrieve all contacts from the database
+  Future<List<Contact>> queryAllRows() async {
+    Database db = await instance.database;
+    List<Map<String, dynamic>> maps = await db.query(table);
+    return List.generate(maps.length, (i) {
+      return Contact.fromMap(maps[i]);
+    });
+  }
+
+  // Update a contact in the database
+  Future<int> update(Contact contact) async {
+    Database db = await instance.database;
+    int id = contact.id;
+    return await db.update(table, contact.toMap(), where: '$columnId = ?', whereArgs: [id]);
+  }
+
+  // Delete a contact from the database
+  Future<int> delete(int id) async {
+    Database db = await instance.database;
+    return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
+  }
+}
+``
