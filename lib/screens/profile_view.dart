@@ -22,8 +22,10 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
+
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
+
     return Column(
       children: [
         Padding(
@@ -102,7 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           keyboardType: TextInputType.name,
                           textAlign: TextAlign.center,
                           decoration: InputDecoration(
-                            hintText: 'Name',
+                            hintText: parentName,
                           ),
                           onChanged: (value) {
                             setState(() {
@@ -127,7 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ? TextField(
                             keyboardType: TextInputType.phone,
                             decoration: InputDecoration(
-                              hintText: 'Mobile Number',
+                              hintText: parentMobile,
                             ),
                             onChanged: (value) {
                               setState(() {
@@ -157,7 +159,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ? TextField(
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
-                              hintText: 'Email Address',
+                              hintText: parentEmail,
                             ),
                             onChanged: (value) {
                               setState(() {

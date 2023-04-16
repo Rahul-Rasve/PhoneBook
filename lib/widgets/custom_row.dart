@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_constructors_in_immutables
 
 import 'package:flutter/material.dart';
-import 'package:phone_book/utils/contants.dart';
 
 class CustomRow extends StatefulWidget {
   CustomRow({
