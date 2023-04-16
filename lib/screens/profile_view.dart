@@ -4,13 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:phone_book/utils/contants.dart';
 import 'package:phone_book/widgets/custom_row.dart';
 import 'package:phone_book/widgets/icons.dart';
+import 'package:phone_book/widgets/profile_page_components.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 var isEditingModeOn = false;
-
-//parent user info
-String parentName = 'Name';
-String parentMobile = 'Mobile Number';
-String parentEmail = 'Email Address';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -20,9 +17,46 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final _nameController = TextEditingController();
+  final _mobileController = TextEditingController();
+  final _emailController = TextEditingController();
+
+  @override
+  void initState() {
+    getParentData();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _mobileController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  void getParentData() async {
+    final sharedPreference = await SharedPreferences.getInstance();
+    final name = sharedPreference.getString('name');
+    final mobile = sharedPreference.getString('mobile');
+    final email = sharedPreference.getString('email');
+    setState(() {
+      _nameController.text = name ?? 'Alen';
+      _mobileController.text = mobile ?? '1234567890';
+      _emailController.text = email ?? 'alen@example.com';
+    });
+  }
+
+  void saveParentData() async {
+    final sharedPreference = await SharedPreferences.getInstance();
+
+    await sharedPreference.setString('name', _nameController.text);
+    await sharedPreference.setString('mobile', _mobileController.text);
+    await sharedPreference.setString('email', _emailController.text);
+  }
+
   @override
   Widget build(BuildContext context) {
-
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
@@ -34,6 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
             vertical: screenWidth / 20,
           ),
           child: Row(
+            //header row
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SizedBox(
@@ -47,74 +82,50 @@ class _ProfilePageState extends State<ProfilePage> {
                 screenHeight: screenHeight,
                 onPressed: () {
                   setState(() {
-                    isEditingModeOn = true;
+                    if (isEditingModeOn) {
+                      saveParentData();
+                      isEditingModeOn = false;
+                    } else {
+                      isEditingModeOn = true;
+                    }
                   });
                 },
-                icon: Icons.edit,
+                icon: isEditingModeOn ? Icons.save : Icons.edit,
               ),
             ],
           ),
         ),
+        //user data
         Expanded(
           child: Container(
-            width: screenWidth,
-            padding: EdgeInsets.only(
-              top: screenWidth / 10,
-              left: screenWidth / 10,
-              right: screenWidth / 10,
-            ),
-            decoration: BoxDecoration(
-              color: secondary,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(screenWidth / 8),
-                topRight: Radius.circular(screenWidth / 8),
-              ),
-            ),
+            padding: profilePadding(screenWidth),
+            decoration: profileBoxDecoration(screenWidth),
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Container(
-                    width: screenWidth / 2.5,
-                    height: screenWidth / 2.5,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      image: DecorationImage(
-                        //TODO: add the user profile picture
-                        image: NetworkImage(
-                          'https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg',
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+                  ProfileImage(
+                    screenWidth: screenWidth,
+                    imageUrl:
+                        'https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg',
                   ),
                   SizedBox(
                     height: screenWidth / 10,
                   ),
                   !isEditingModeOn
-                      ? FittedBox(
-                          child: Text(
-                            parentName,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: screenWidth / 15,
-                            ),
-                          ),
+                      ? ParentNameText(
+                          nameController: _nameController,
+                          screenWidth: screenWidth,
                         )
                       : TextField(
+                          controller: _nameController,
                           keyboardType: TextInputType.name,
                           textAlign: TextAlign.center,
                           decoration: InputDecoration(
-                            hintText: parentName,
+                            hintText: 'Name',
                           ),
                           onChanged: (value) {
                             setState(() {
-                              parentName = value;
-                            });
-                          },
-                          onSubmitted: (value) {
-                            setState(() {
-                              isEditingModeOn = false;
-                              parentName = value;
+                              saveParentData();
                             });
                           },
                         ),
@@ -127,24 +138,19 @@ class _ProfilePageState extends State<ProfilePage> {
                     iconData: Icons.call,
                     customWidget: isEditingModeOn
                         ? TextField(
+                            controller: _mobileController,
                             keyboardType: TextInputType.phone,
                             decoration: InputDecoration(
-                              hintText: parentMobile,
+                              hintText: 'Mobile',
                             ),
                             onChanged: (value) {
                               setState(() {
-                                parentMobile = value;
-                              });
-                            },
-                            onSubmitted: (value) {
-                              setState(() {
-                                isEditingModeOn = false;
-                                parentMobile = value;
+                                saveParentData();
                               });
                             },
                           )
                         : Text(
-                            parentMobile,
+                            _mobileController.text,
                             style: TextStyle(fontSize: screenWidth / 20),
                           ),
                   ),
@@ -157,24 +163,19 @@ class _ProfilePageState extends State<ProfilePage> {
                     iconData: Icons.mail,
                     customWidget: isEditingModeOn
                         ? TextField(
+                            controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
-                              hintText: parentEmail,
+                              hintText: 'Email Address',
                             ),
                             onChanged: (value) {
                               setState(() {
-                                parentEmail = value;
-                              });
-                            },
-                            onSubmitted: (value) {
-                              setState(() {
-                                isEditingModeOn = false;
-                                parentEmail = value;
+                                saveParentData();
                               });
                             },
                           )
                         : Text(
-                            parentEmail,
+                            _emailController.text,
                             style: TextStyle(fontSize: screenWidth / 20),
                           ),
                   ),
