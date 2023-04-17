@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:phone_book/userType/contact.dart';
 import 'package:phone_book/utils/contants.dart';
 
 class CustomListView extends StatelessWidget {
@@ -9,15 +12,15 @@ class CustomListView extends StatelessWidget {
     required this.screenWidth,
     required this.iconData,
     required this.iconColor,
-    required this.iconOnTap,
     required this.onItemClicked,
+    required this.contact,
   });
 
   final double screenWidth;
   final IconData iconData;
   final Color iconColor;
-  final VoidCallback iconOnTap;
   final VoidCallback onItemClicked;
+  final Contact contact;
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +46,8 @@ class CustomListView extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
               image: DecorationImage(
-                image: NetworkImage(
-                  'https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg',
+                image: FileImage(
+                  File(contact.photoUrl),
                 ),
                 fit: BoxFit.cover,
               ),
@@ -54,7 +57,7 @@ class CustomListView extends StatelessWidget {
         title: Align(
           alignment: Alignment(-0.5, 0),
           child: Text(
-            'Rahul Rasve',
+            contact.name,
             style: TextStyle(
               fontSize: screenWidth / 22,
             ),
@@ -69,7 +72,7 @@ class CustomListView extends StatelessWidget {
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
               radius: 40,
-              onTap: () => iconOnTap,
+              onTap: () {}, //TODO: add contact to favourites
               splashColor: Colors.grey.withOpacity(0.3),
               child: Icon(
                 iconData,

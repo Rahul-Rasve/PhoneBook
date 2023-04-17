@@ -41,46 +41,59 @@ class DbHandler {
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE $table (
-        $colId INTEGER PRIMARY KEY AUTOINCREMENT,
+        $colId VARCHAR PRIMARY KEY,
         $colPhoto VARCHAR,
         $colName VARCHAR,
-        $colMobile NUMBER(10),
+        $colMobile VARCHAR(10),
         $colEmail VARCHAR
       );
     ''');
+    print('database created');
   }
 
   //handler methods
 
   //add contact
   Future<void> insert(Contact contact) async {
-    Database db = await instance.database;
-    await db.insert(table, contact.toMap());
+    try {
+      Database db = await instance.database;
+      await db.insert(table, contact.toMap());
+    } on Exception catch (_) {
+      print('error in database insertion');
+    }
   }
 
   //delete contact
-  Future<void> delete(int id) async {
-    Database db = await instance.database;
-    await db.delete(
-      table,
-      where: '$colId = ?',
-      whereArgs: [id],
-    );
+  Future<void> delete(String id) async {
+    try {
+      Database db = await instance.database;
+      await db.delete(
+        table,
+        where: '$colId = ?',
+        whereArgs: [id],
+      );
+    } catch (e) {
+      print('error in deleting contact');
+    }
   }
 
   //update contact
   Future<void> update(Contact contact) async {
-    Database db = await instance.database;
-    await db.update(
-      table,
-      contact.toMap(),
-      where: '$colId = ?',
-      whereArgs: [contact.id],
-    );
+    try {
+      Database db = await instance.database;
+      await db.update(
+        table,
+        contact.toMap(),
+        where: '$colId = ?',
+        whereArgs: [contact.id],
+      );
+    } catch (e) {
+      print('error in updating');
+    }
   }
 
   //search contact
-  Future<Contact> search(int id) async {
+  Future<Contact> search(String id) async {
     Database db = await instance.database;
 
     final List<Map<String, dynamic>> maps = await db.query(
@@ -99,9 +112,7 @@ class DbHandler {
 
     return List.generate(
       maps.length,
-      (index) => Contact.fromMap(
-        maps[index],
-      ),
+      (index) => Contact.fromMap(maps[index]),
     );
   }
 }

@@ -1,6 +1,6 @@
 class Contact {
-  final int id;
-  final String photoUrl;
+  final String id;
+  final String photoUrl; //the path of image source
   final String name;
   final String mobile;
   final String email;

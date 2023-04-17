@@ -17,6 +17,7 @@ class FavoritesPage extends StatefulWidget {
 
 class _FavoritesPageState extends State<FavoritesPage> {
   final List<Contact> favContactList = [];
+
   //get perticular index contact
   void onItemClicked(int index) async {
     final contactId = favContactList[index].id;
@@ -70,27 +71,37 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 topRight: Radius.circular(screenWidth / 8),
               ),
             ),
-            child: ListView.separated(
-              itemCount: 20,
-              physics: BouncingScrollPhysics(),
-              itemBuilder: ((context, index) {
-                return CustomListView(
-                  screenWidth: screenWidth,
-                  iconData: Icons.delete_rounded,
-                  iconColor: Colors.white,
-                  iconOnTap: () {},
-                  onItemClicked: () => onItemClicked(index),
-                );
-              }),
-              separatorBuilder: (BuildContext context, int index) {
-                return Divider(
-                  color: Colors.blueGrey[800],
-                  thickness: 1.0,
-                  indent: screenWidth / 15,
-                  endIndent: screenWidth / 15,
-                );
-              },
-            ),
+            child: favContactList.isEmpty
+                ? Center(
+                    child: Text(
+                      'No Favourites Added!',
+                      style: TextStyle(
+                        fontSize: screenWidth / 20,
+                      ),
+                    ),
+                  )
+                : ListView.separated(
+                    itemCount: favContactList.length,
+                    physics: BouncingScrollPhysics(),
+                    itemBuilder: ((context, index) {
+                      Contact contact = favContactList[index];
+                      return CustomListView(
+                        screenWidth: screenWidth,
+                        iconData: Icons.delete_rounded,
+                        iconColor: Colors.white,
+                        onItemClicked: () => onItemClicked(index),
+                        contact: contact,
+                      );
+                    }),
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Divider(
+                        color: Colors.blueGrey[800],
+                        thickness: 1.0,
+                        indent: screenWidth / 15,
+                        endIndent: screenWidth / 15,
+                      );
+                    },
+                  ),
           ),
         ),
       ],

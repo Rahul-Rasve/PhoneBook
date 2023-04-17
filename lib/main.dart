@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       home: HomePage(),
       routes: {
         homePage: (context) => HomePage(),
-        constactsPage: (context) => ContactsPage(),
+        contactsPage: (context) => ContactsPage(),
         favoritePage: (context) => FavoritesPage(),
         profilePage: (context) => ProfilePage(),
         addContact: (context) => AddContact(),

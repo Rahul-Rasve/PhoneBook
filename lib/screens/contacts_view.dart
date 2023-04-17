@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:phone_book/database/db_handler.dart';
+import 'package:phone_book/screens/add_contact.dart';
 import 'package:phone_book/screens/contact_details.dart';
 import 'package:phone_book/userType/contact.dart';
 import 'package:phone_book/utils/contants.dart';
@@ -10,7 +11,9 @@ import 'package:phone_book/widgets/custom_listview.dart';
 import 'package:phone_book/widgets/icons.dart';
 
 class ContactsPage extends StatefulWidget {
-  const ContactsPage({super.key});
+  const ContactsPage({
+    super.key,
+  });
 
   @override
   State<ContactsPage> createState() => _ContactsPageState();
@@ -23,6 +26,11 @@ class _ContactsPageState extends State<ContactsPage> {
   void initState() {
     getAllContacts();
     super.initState();
+  }
+
+  Future<void> addContactData(Contact contact) async {
+    await DbHandler.instance.insert(contact);
+    initState();
   }
 
   //get contacts to display
@@ -74,7 +82,16 @@ class _ContactsPageState extends State<ContactsPage> {
               ),
               IconButtons(
                 icon: Icons.person_add_rounded,
-                onPressed: () => Navigator.pushNamed(context, addContact),
+                onPressed: () async {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddContact(
+                        addContactData: addContactData,
+                      ),
+                    ),
+                  );
+                },
                 screenHeight: screenHeight,
               ),
             ],
@@ -89,27 +106,37 @@ class _ContactsPageState extends State<ContactsPage> {
                 topRight: Radius.circular(screenWidth / 8),
               ),
             ),
-            child: ListView.separated(
-              itemCount: 20,
-              physics: BouncingScrollPhysics(),
-              itemBuilder: ((context, index) {
-                return CustomListView(
-                  screenWidth: screenWidth,
-                  iconColor: Colors.white,
-                  iconData: Icons.star_border,
-                  iconOnTap: () {},
-                  onItemClicked: () => onItemClicked(index),
-                );
-              }),
-              separatorBuilder: (BuildContext context, int index) {
-                return Divider(
-                  color: Colors.blueGrey[800],
-                  thickness: 1.0,
-                  indent: screenWidth / 15,
-                  endIndent: screenWidth / 15,
-                );
-              },
-            ),
+            child: contactList.isEmpty
+                ? Center(
+                    child: Text(
+                      'No Contacts Found!',
+                      style: TextStyle(
+                        fontSize: screenWidth / 20,
+                      ),
+                    ),
+                  )
+                : ListView.separated(
+                    itemCount: contactList.length,
+                    physics: BouncingScrollPhysics(),
+                    itemBuilder: ((context, index) {
+                      Contact contact = contactList[index];
+                      return CustomListView(
+                        screenWidth: screenWidth,
+                        iconColor: Colors.white,
+                        iconData: Icons.star_border,
+                        onItemClicked: () => onItemClicked(index),
+                        contact: contact,
+                      );
+                    }),
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Divider(
+                        color: Colors.blueGrey[800],
+                        thickness: 1.0,
+                        indent: screenWidth / 15,
+                        endIndent: screenWidth / 15,
+                      );
+                    },
+                  ),
           ),
         ),
       ],

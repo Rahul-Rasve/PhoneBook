@@ -22,7 +22,6 @@ class _ContactDetailsState extends State<ContactDetails> {
       body: SafeArea(
         child: Column(
           children: [
-            Text('Id : ${widget.contact!.id}'),
             Text('Name : ${widget.contact!.name}'),
             Text('Mobile : ${widget.contact!.mobile}'),
             Text('Email : ${widget.contact!.email}'),
