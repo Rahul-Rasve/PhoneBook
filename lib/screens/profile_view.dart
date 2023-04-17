@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:phone_book/utils/contants.dart';
 import 'package:phone_book/widgets/custom_row.dart';
 import 'package:phone_book/widgets/icons.dart';
@@ -20,6 +23,8 @@ class _ProfilePageState extends State<ProfilePage> {
   final _nameController = TextEditingController();
   final _mobileController = TextEditingController();
   final _emailController = TextEditingController();
+  File? imageFile;
+  String? imagePath;
 
   @override
   void initState() {
@@ -35,12 +40,35 @@ class _ProfilePageState extends State<ProfilePage> {
     super.dispose();
   }
 
+  Future<void> pickImage() async {
+    if (isEditingModeOn) {
+      final pickedFile = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+      );
+
+      setState(() {
+        imageFile = File(pickedFile!.path);
+        imagePath = pickedFile.path;
+      });
+
+      saveParentData();
+    }
+    else{
+      return;
+    }
+  }
+
   void getParentData() async {
     final sharedPreference = await SharedPreferences.getInstance();
+    final photoPath = sharedPreference.getString('photo');
     final name = sharedPreference.getString('name');
     final mobile = sharedPreference.getString('mobile');
     final email = sharedPreference.getString('email');
     setState(() {
+      if (photoPath != null) {
+        imagePath = photoPath;
+        imageFile = File(photoPath);
+      }
       _nameController.text = name ?? 'Alen';
       _mobileController.text = mobile ?? '1234567890';
       _emailController.text = email ?? 'alen@example.com';
@@ -50,6 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void saveParentData() async {
     final sharedPreference = await SharedPreferences.getInstance();
 
+    await sharedPreference.setString('photo', imagePath!);
     await sharedPreference.setString('name', _nameController.text);
     await sharedPreference.setString('mobile', _mobileController.text);
     await sharedPreference.setString('email', _emailController.text);
@@ -105,8 +134,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 children: [
                   ProfileImage(
                     screenWidth: screenWidth,
-                    imageUrl:
-                        'https://img.freepik.com/free-photo/portrait-white-man-isolated_53876-40306.jpg',
+                    onTap: () => pickImage(),
+                    selectedImageFile: imageFile,
                   ),
                   SizedBox(
                     height: screenWidth / 10,

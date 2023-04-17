@@ -41,12 +41,12 @@ class DbHandler {
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE $table (
-        $colId INTEGER PRIMARY KEY AUTO_INCREMENT,
-        $colPhoto TEXT,
-        $colName Text,
-        $colMobile Text(10),
-        $colEmail Text,
-      )
+        $colId INTEGER PRIMARY KEY AUTOINCREMENT,
+        $colPhoto VARCHAR,
+        $colName VARCHAR,
+        $colMobile NUMBER(10),
+        $colEmail VARCHAR
+      );
     ''');
   }
 
@@ -77,6 +77,19 @@ class DbHandler {
       where: '$colId = ?',
       whereArgs: [contact.id],
     );
+  }
+
+  //search contact
+  Future<Contact> search(int id) async {
+    Database db = await instance.database;
+
+    final List<Map<String, dynamic>> maps = await db.query(
+      table,
+      where: '$colId = ?',
+      whereArgs: [id],
+    );
+
+    return Contact.fromMap(maps.first);
   }
 
   //get all contacts

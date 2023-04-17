@@ -1,7 +1,11 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:phone_book/database/db_handler.dart';
+import 'package:phone_book/screens/contact_details.dart';
+import 'package:phone_book/userType/contact.dart';
 import 'package:phone_book/utils/contants.dart';
+import 'package:phone_book/utils/routes.dart';
 import 'package:phone_book/widgets/custom_listview.dart';
 import 'package:phone_book/widgets/icons.dart';
 
@@ -13,6 +17,37 @@ class ContactsPage extends StatefulWidget {
 }
 
 class _ContactsPageState extends State<ContactsPage> {
+  List<Contact> contactList = [];
+
+  @override
+  void initState() {
+    getAllContacts();
+    super.initState();
+  }
+
+  //get contacts to display
+  Future<void> getAllContacts() async {
+    List<Contact> contacts = await DbHandler.instance.getAllContacts();
+
+    setState(() {
+      contactList = contacts;
+    });
+  }
+
+  //get perticular index contact
+  void onItemClicked(int index) async {
+    final contactId = contactList[index].id;
+
+    final Contact selectedContact = await DbHandler.instance.search(contactId);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ContactDetails(selectedContact),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -39,7 +74,7 @@ class _ContactsPageState extends State<ContactsPage> {
               ),
               IconButtons(
                 icon: Icons.person_add_rounded,
-                onPressed: () {},
+                onPressed: () => Navigator.pushNamed(context, addContact),
                 screenHeight: screenHeight,
               ),
             ],
@@ -63,6 +98,7 @@ class _ContactsPageState extends State<ContactsPage> {
                   iconColor: Colors.white,
                   iconData: Icons.star_border,
                   iconOnTap: () {},
+                  onItemClicked: () => onItemClicked(index),
                 );
               }),
               separatorBuilder: (BuildContext context, int index) {

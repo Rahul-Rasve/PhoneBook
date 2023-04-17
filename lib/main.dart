@@ -1,7 +1,8 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:phone_book/screens/contact_details.dart';
+import 'package:phone_book/screens/add_contact.dart';
+import 'package:phone_book/screens/contacts_view.dart';
 import 'package:phone_book/screens/favorites_view.dart';
 import 'package:phone_book/screens/home_view.dart';
 import 'package:phone_book/screens/profile_view.dart';
@@ -26,10 +27,10 @@ class MyApp extends StatelessWidget {
       home: HomePage(),
       routes: {
         homePage: (context) => HomePage(),
-        contactDetails: (context) => ContactDetails(),
-        constactsPage: (context) => ContactDetails(),
+        constactsPage: (context) => ContactsPage(),
         favoritePage: (context) => FavoritesPage(),
         profilePage: (context) => ProfilePage(),
+        addContact: (context) => AddContact(),
       },
     );
   }

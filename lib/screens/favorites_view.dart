@@ -1,6 +1,9 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:phone_book/database/db_handler.dart';
+import 'package:phone_book/screens/contact_details.dart';
+import 'package:phone_book/userType/contact.dart';
 import 'package:phone_book/utils/contants.dart';
 import 'package:phone_book/widgets/custom_listview.dart';
 import 'package:phone_book/widgets/icons.dart';
@@ -13,6 +16,21 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
+  final List<Contact> favContactList = [];
+  //get perticular index contact
+  void onItemClicked(int index) async {
+    final contactId = favContactList[index].id;
+
+    final Contact selectedContact = await DbHandler.instance.search(contactId);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ContactDetails(selectedContact),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -61,6 +79,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                   iconData: Icons.delete_rounded,
                   iconColor: Colors.white,
                   iconOnTap: () {},
+                  onItemClicked: () => onItemClicked(index),
                 );
               }),
               separatorBuilder: (BuildContext context, int index) {
