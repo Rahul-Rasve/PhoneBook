@@ -25,16 +25,15 @@ class CustomListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      //to clip the splash effect onTap
+      // to clip the splash effect onTap
       color: secondary,
       borderRadius: BorderRadius.only(
         topLeft: Radius.circular(screenWidth / 8),
         topRight: Radius.circular(screenWidth / 8),
       ),
-      borderOnForeground: true,
       clipBehavior: Clip.antiAlias,
       child: ListTile(
-        onTap: () => onItemClicked,
+        onTap: onItemClicked,
         contentPadding: EdgeInsets.symmetric(
           vertical: screenWidth / 18,
           horizontal: screenWidth / 10,

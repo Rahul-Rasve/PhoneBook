@@ -27,7 +27,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ContactDetails(selectedContact),
+        builder: (context) => ContactDetails(contact: selectedContact),
       ),
     );
   }

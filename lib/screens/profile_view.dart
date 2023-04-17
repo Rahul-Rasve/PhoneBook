@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phone_book/utils/contants.dart';
 import 'package:phone_book/widgets/custom_row.dart';
@@ -46,14 +47,20 @@ class _ProfilePageState extends State<ProfilePage> {
         source: ImageSource.gallery,
       );
 
-      setState(() {
-        imageFile = File(pickedFile!.path);
-        imagePath = pickedFile.path;
-      });
+      if (pickedFile != null) {
+        setState(() {
+          imageFile = File(pickedFile.path);
+          imagePath = pickedFile.path;
+        });
+      } else {
+        Fluttertoast.showToast(
+          msg: 'No Image selected!',
+          toastLength: Toast.LENGTH_LONG,
+        );
+      }
 
       saveParentData();
-    }
-    else{
+    } else {
       return;
     }
   }

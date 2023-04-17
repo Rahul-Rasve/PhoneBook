@@ -6,9 +6,10 @@ import 'package:phone_book/screens/add_contact.dart';
 import 'package:phone_book/screens/contact_details.dart';
 import 'package:phone_book/userType/contact.dart';
 import 'package:phone_book/utils/contants.dart';
-import 'package:phone_book/utils/routes.dart';
 import 'package:phone_book/widgets/custom_listview.dart';
 import 'package:phone_book/widgets/icons.dart';
+
+var isEditingModeOn = false;
 
 class ContactsPage extends StatefulWidget {
   const ContactsPage({
@@ -33,6 +34,16 @@ class _ContactsPageState extends State<ContactsPage> {
     initState();
   }
 
+  Future<void> updateContactdata(Contact contact) async {
+    await DbHandler.instance.update(contact);
+    initState();
+  }
+
+  Future<void> deleteContactdata(String id) async {
+    await DbHandler.instance.delete(id);
+    initState();
+  }
+
   //get contacts to display
   Future<void> getAllContacts() async {
     List<Contact> contacts = await DbHandler.instance.getAllContacts();
@@ -40,20 +51,6 @@ class _ContactsPageState extends State<ContactsPage> {
     setState(() {
       contactList = contacts;
     });
-  }
-
-  //get perticular index contact
-  void onItemClicked(int index) async {
-    final contactId = contactList[index].id;
-
-    final Contact selectedContact = await DbHandler.instance.search(contactId);
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ContactDetails(selectedContact),
-      ),
-    );
   }
 
   @override
@@ -124,7 +121,15 @@ class _ContactsPageState extends State<ContactsPage> {
                         screenWidth: screenWidth,
                         iconColor: Colors.white,
                         iconData: Icons.star_border,
-                        onItemClicked: () => onItemClicked(index),
+                        onItemClicked: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ContactDetails(
+                                //this is for contact details page
+                                contact: contact),
+                          ),
+                        ),
+                        //this is for custom listView page
                         contact: contact,
                       );
                     }),
