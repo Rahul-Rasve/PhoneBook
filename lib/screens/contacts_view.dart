@@ -29,17 +29,17 @@ class _ContactsPageState extends State<ContactsPage> {
 
   Future<void> addContactData(Contact contact) async {
     await DbHandler.instance.insert(contact);
-    initState();
+    getAllContacts();
   }
 
   Future<void> updateContactdata(Contact contact) async {
     await DbHandler.instance.update(contact);
-    initState();
+    getAllContacts();
   }
 
   Future<void> deleteContactdata(String id) async {
     await DbHandler.instance.delete(id);
-    initState();
+    getAllContacts();
   }
 
   //get contacts to display
@@ -126,6 +126,7 @@ class _ContactsPageState extends State<ContactsPage> {
                               //this is for contact details page
                               contact: contact,
                               updateContactdata: updateContactdata,
+                              deleteContactData: deleteContactdata,
                             ),
                           ),
                         ),

@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:phone_book/userType/contact.dart';
 import 'package:phone_book/utils/contants.dart';
 import 'package:phone_book/widgets/custom_row.dart';
+import 'package:phone_book/widgets/delete_alert.dart';
 import 'package:phone_book/widgets/icons.dart';
 import 'package:phone_book/widgets/profile_page_components.dart';
 
@@ -67,7 +68,7 @@ class _ContactDetailsState extends State<ContactDetails> {
     }
   }
 
-  Future<bool> updateContact(double screenWidth) async {
+  bool updateContact(double screenWidth) {
     widget.contact.photoUrl = imagePath!;
 
     if (_nameController.text == '' ||
@@ -86,7 +87,24 @@ class _ContactDetailsState extends State<ContactDetails> {
     return true;
   }
 
-  Future<void> deleteContact() async {}
+  void deleteContact(double screenWidth) {
+    if (!isEditingModeOn) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return DeleteAlert(
+            screenWidth: screenWidth,
+            onOkPressed: () {
+              widget.deleteContactData!(widget.contact.id);
+              Navigator.popUntil(context, (route) => route.isFirst);
+            },
+          );
+        },
+      );
+    } else {
+      return;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,8 +138,8 @@ class _ContactDetailsState extends State<ContactDetails> {
                   ),
                   IconButtons(
                     screenHeight: screenHeight,
-                    onPressed: () async {
-                      if (isEditingModeOn && await updateContact(screenWidth)) {
+                    onPressed: () {
+                      if (isEditingModeOn && updateContact(screenWidth)) {
                         Fluttertoast.showToast(
                           msg: 'Contact ${widget.contact.name} Updated!',
                           fontSize: screenWidth / 9,
@@ -129,8 +147,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                         setState(() {
                           isEditingModeOn = false;
                         });
-                      }
-                      else{
+                      } else {
                         setState(() {
                           isEditingModeOn = true;
                         });
@@ -255,7 +272,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                     DeleteButton(
                       screenWidth: screenWidth,
                       screenHeight: screenHeight,
-                      onPressed: () {},
+                      onPressed: () => deleteContact(screenWidth),
                     ),
                   ],
                 ),
