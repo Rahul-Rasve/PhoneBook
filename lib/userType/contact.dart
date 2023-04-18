@@ -1,9 +1,9 @@
 class Contact {
-  final String id;
-  final String photoUrl; //the path of image source
-  final String name;
-  final String mobile;
-  final String email;
+  String id;
+  String photoUrl; //the path of image source
+  String name;
+  String mobile;
+  String email;
 
   Contact({
     required this.id,

@@ -58,3 +58,44 @@ class ParentNameText extends StatelessWidget {
     );
   }
 }
+
+class DeleteButton extends StatelessWidget {
+  const DeleteButton({
+    super.key,
+    required this.screenWidth,
+    required this.screenHeight,
+    required this.onPressed,
+  });
+
+  final double screenWidth;
+  final double screenHeight;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.red[900]),
+        fixedSize: MaterialStateProperty.all(
+          Size(screenWidth, screenHeight / 15),
+        ),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              screenWidth / 20,
+            ),
+          ),
+        ),
+      ),
+      child: Text(
+        'Delete Contact',
+        style: TextStyle(
+          fontSize: screenWidth / 18,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.2,
+        ),
+      ),
+    );
+  }
+}

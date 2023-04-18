@@ -5,12 +5,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:phone_book/screens/contacts_view.dart';
 import 'package:phone_book/userType/contact.dart';
 import 'package:phone_book/utils/contants.dart';
 import 'package:phone_book/widgets/custom_row.dart';
 import 'package:phone_book/widgets/icons.dart';
 import 'package:phone_book/widgets/profile_page_components.dart';
+
+var isEditingModeOn = false;
 
 class ContactDetails extends StatefulWidget {
   final Contact contact;
@@ -38,6 +39,7 @@ class _ContactDetailsState extends State<ContactDetails> {
   @override
   void initState() {
     super.initState();
+    imagePath = widget.contact.photoUrl;
     _nameController.text = widget.contact.name;
     _mobileController.text = widget.contact.mobile;
     _emailController.text = widget.contact.email;
@@ -65,8 +67,26 @@ class _ContactDetailsState extends State<ContactDetails> {
     }
   }
 
-  void updateContact() async {}
-  void deleteContact() async {}
+  Future<bool> updateContact(double screenWidth) async {
+    widget.contact.photoUrl = imagePath!;
+
+    if (_nameController.text == '' ||
+        _mobileController.text == '' ||
+        _emailController.text == '') {
+      Fluttertoast.showToast(
+        msg: 'Something is missing...',
+        fontSize: screenWidth / 9,
+        toastLength: Toast.LENGTH_LONG,
+      );
+      return false;
+    }
+
+    widget.updateContactdata!(widget.contact);
+
+    return true;
+  }
+
+  Future<void> deleteContact() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +108,9 @@ class _ContactDetailsState extends State<ContactDetails> {
                   IconButtons(
                     screenHeight: screenHeight,
                     onPressed: () {
-                      isEditingModeOn = false;
+                      setState(() {
+                        isEditingModeOn = false;
+                      });
                       Navigator.pop(context);
                     },
                     icon: Icons.arrow_back_ios_new_rounded,
@@ -98,10 +120,21 @@ class _ContactDetailsState extends State<ContactDetails> {
                   ),
                   IconButtons(
                     screenHeight: screenHeight,
-                    onPressed: () {
-                      setState(() {
-                        isEditingModeOn = true;
-                      });
+                    onPressed: () async {
+                      if (isEditingModeOn && await updateContact(screenWidth)) {
+                        Fluttertoast.showToast(
+                          msg: 'Contact ${widget.contact.name} Updated!',
+                          fontSize: screenWidth / 9,
+                        );
+                        setState(() {
+                          isEditingModeOn = false;
+                        });
+                      }
+                      else{
+                        setState(() {
+                          isEditingModeOn = true;
+                        });
+                      }
                     },
                     icon: isEditingModeOn ? Icons.save : Icons.edit,
                   ),
@@ -120,7 +153,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                       selectedImageFile: File(widget.contact.photoUrl),
                     ),
                     SizedBox(
-                      height: screenWidth / 10,
+                      height: screenWidth / 14,
                     ),
                     !isEditingModeOn
                         ? Text(
@@ -138,21 +171,27 @@ class _ContactDetailsState extends State<ContactDetails> {
                               hintText: 'Name',
                             ),
                             onChanged: (value) {
-                              setState(() {});
+                              setState(() {
+                                widget.contact.name = _nameController.text;
+                              });
                             },
                           ),
                     SizedBox(
-                      height: screenWidth / 10,
+                      height: screenWidth / 14,
                     ),
                     CustomRow(
                       width: screenWidth,
                       backgroundColor: Colors.green,
                       iconData: Icons.call,
                       customWidget: !isEditingModeOn
-                          ? Text(
-                              widget.contact.mobile,
-                              style: TextStyle(
-                                fontSize: screenWidth / 20,
+                          ? GestureDetector(
+                              //make a call
+                              onTap: () {},
+                              child: Text(
+                                widget.contact.mobile,
+                                style: TextStyle(
+                                  fontSize: screenWidth / 20,
+                                ),
                               ),
                             )
                           : TextField(
@@ -162,12 +201,15 @@ class _ContactDetailsState extends State<ContactDetails> {
                                 hintText: 'Mobile',
                               ),
                               onChanged: (value) {
-                                setState(() {});
+                                setState(() {
+                                  widget.contact.mobile =
+                                      _mobileController.text;
+                                });
                               },
                             ),
                     ),
                     SizedBox(
-                      height: screenWidth / 10,
+                      height: screenWidth / 14,
                     ),
                     CustomRow(
                       width: screenWidth,
@@ -187,37 +229,33 @@ class _ContactDetailsState extends State<ContactDetails> {
                                 hintText: 'Email Address',
                               ),
                               onChanged: (value) {
-                                setState(() {});
+                                setState(() {
+                                  widget.contact.email = _emailController.text;
+                                });
                               },
                             ),
                     ),
                     SizedBox(
-                      height: screenWidth / 5,
+                      height: screenWidth / 14,
                     ),
-                    ElevatedButton(
-                      onPressed: () {},
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.red[900]),
-                        fixedSize: MaterialStateProperty.all(
-                          Size(screenWidth, screenHeight / 15),
-                        ),
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              screenWidth / 20,
-                            ),
-                          ),
-                        ),
-                      ),
-                      child: Text(
-                        'Delete Contact',
+                    CustomRow(
+                      width: screenWidth,
+                      backgroundColor: Colors.yellow,
+                      iconData: Icons.message_rounded,
+                      customWidget: Text(
+                        'Send a Message',
                         style: TextStyle(
-                          fontSize: screenWidth / 18,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.2,
+                          fontSize: screenWidth / 20,
                         ),
                       ),
+                    ),
+                    SizedBox(
+                      height: screenWidth / 8,
+                    ),
+                    DeleteButton(
+                      screenWidth: screenWidth,
+                      screenHeight: screenHeight,
+                      onPressed: () {},
                     ),
                   ],
                 ),

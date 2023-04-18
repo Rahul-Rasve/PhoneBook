@@ -9,8 +9,6 @@ import 'package:phone_book/utils/contants.dart';
 import 'package:phone_book/widgets/custom_listview.dart';
 import 'package:phone_book/widgets/icons.dart';
 
-var isEditingModeOn = false;
-
 class ContactsPage extends StatefulWidget {
   const ContactsPage({
     super.key,
@@ -125,8 +123,10 @@ class _ContactsPageState extends State<ContactsPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ContactDetails(
-                                //this is for contact details page
-                                contact: contact),
+                              //this is for contact details page
+                              contact: contact,
+                              updateContactdata: updateContactdata,
+                            ),
                           ),
                         ),
                         //this is for custom listView page
