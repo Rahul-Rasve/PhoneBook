@@ -64,7 +64,16 @@ class _AddContactState extends State<AddContact> {
     var rnd = Random().nextInt(0xFFFFFFFF);
     var uuid = rnd.toRadixString(16).padLeft(8, '0');
 
-    if (_nameController.text == '' ||
+    if(imagePath == null){
+      Fluttertoast.showToast(
+        msg: 'Please Select a Profile Photo.',
+        fontSize: screenWidth / 9,
+        toastLength: Toast.LENGTH_LONG,
+      );
+
+      return false;
+    }
+    else if (_nameController.text == '' ||
         _mobileController.text == '' ||
         _emailController.text == '') {
       Fluttertoast.showToast(

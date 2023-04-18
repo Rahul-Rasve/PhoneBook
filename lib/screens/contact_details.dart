@@ -11,7 +11,6 @@ import 'package:phone_book/widgets/custom_row.dart';
 import 'package:phone_book/widgets/delete_alert.dart';
 import 'package:phone_book/widgets/icons.dart';
 import 'package:phone_book/widgets/profile_page_components.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 var isEditingModeOn = false;
@@ -161,149 +160,153 @@ class _ContactDetailsState extends State<ContactDetails> {
               ),
             ),
             Expanded(
-              child: Container(
-                padding: profilePadding(screenWidth),
-                decoration: profileBoxDecoration(screenWidth),
-                child: Column(
-                  children: [
-                    ProfileImage(
-                      screenWidth: screenWidth,
-                      onTap: () => pickImage(),
-                      selectedImageFile: File(widget.contact.photoUrl),
-                    ),
-                    SizedBox(
-                      height: screenWidth / 14,
-                    ),
-                    !isEditingModeOn
-                        ? Text(
-                            widget.contact.name,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: screenWidth / 15,
-                            ),
-                          )
-                        : TextField(
-                            controller: _nameController,
-                            keyboardType: TextInputType.name,
-                            textAlign: TextAlign.center,
-                            decoration: InputDecoration(
-                              hintText: 'Name',
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                widget.contact.name = _nameController.text;
-                              });
-                            },
-                          ),
-                    SizedBox(
-                      height: screenWidth / 14,
-                    ),
-                    CustomRow(
-                      width: screenWidth,
-                      backgroundColor: Colors.green,
-                      iconData: Icons.call,
-                      customWidget: !isEditingModeOn
-                          ? GestureDetector(
-                              //make a call
-                              onTap: () async {
-                                if (!isEditingModeOn) {
-                                  final url = 'tel: ${widget.contact.mobile}';
-                                  if (await canLaunchUrlString(url)) {
-                                    await launchUrlString(url);
-                                  }
-                                }
-                              },
-                              child: Text(
-                                widget.contact.mobile,
-                                style: TextStyle(
-                                  fontSize: screenWidth / 20,
-                                ),
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: profilePadding(screenWidth),
+                  decoration: profileBoxDecoration(screenWidth),
+                  child: Column(
+                    children: [
+                      ProfileImage(
+                        screenWidth: screenWidth,
+                        onTap: () => pickImage(),
+                        selectedImageFile: File(widget.contact.photoUrl),
+                      ),
+                      SizedBox(
+                        height: screenWidth / 14,
+                      ),
+                      !isEditingModeOn
+                          ? Text(
+                              widget.contact.name,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: screenWidth / 15,
                               ),
                             )
                           : TextField(
-                              controller: _mobileController,
-                              keyboardType: TextInputType.phone,
+                              controller: _nameController,
+                              keyboardType: TextInputType.name,
+                              textAlign: TextAlign.center,
                               decoration: InputDecoration(
-                                hintText: 'Mobile',
+                                hintText: 'Name',
                               ),
                               onChanged: (value) {
                                 setState(() {
-                                  widget.contact.mobile =
-                                      _mobileController.text;
+                                  widget.contact.name = _nameController.text;
                                 });
                               },
                             ),
-                    ),
-                    SizedBox(
-                      height: screenWidth / 14,
-                    ),
-                    CustomRow(
-                      width: screenWidth,
-                      backgroundColor: Colors.grey.shade800,
-                      iconData: Icons.mail_rounded,
-                      customWidget: !isEditingModeOn
-                          ? GestureDetector(
-                              onTap: () async {
-                                if (!isEditingModeOn) {
-                                  final url = 'mailto: ${widget.contact.email}';
-                                  if (await canLaunchUrlString(url)) {
-                                    await launchUrlString(url);
+                      SizedBox(
+                        height: screenWidth / 14,
+                      ),
+                      CustomRow(
+                        width: screenWidth,
+                        backgroundColor: Colors.green,
+                        iconData: Icons.call,
+                        customWidget: !isEditingModeOn
+                            ? GestureDetector(
+                                //make a call
+                                onTap: () async {
+                                  if (!isEditingModeOn) {
+                                    final url = 'tel: ${widget.contact.mobile}';
+                                    if (await canLaunchUrlString(url)) {
+                                      await launchUrlString(url);
+                                    }
                                   }
-                                }
-                              },
-                              child: Text(
-                                widget.contact.email,
-                                style: TextStyle(
-                                  fontSize: screenWidth / 20,
+                                },
+                                child: Text(
+                                  widget.contact.mobile,
+                                  style: TextStyle(
+                                    fontSize: screenWidth / 20,
+                                  ),
                                 ),
+                              )
+                            : TextField(
+                                controller: _mobileController,
+                                keyboardType: TextInputType.phone,
+                                decoration: InputDecoration(
+                                  hintText: 'Mobile',
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    widget.contact.mobile =
+                                        _mobileController.text;
+                                  });
+                                },
                               ),
-                            )
-                          : TextField(
-                              controller: _emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              decoration: InputDecoration(
-                                hintText: 'Email Address',
+                      ),
+                      SizedBox(
+                        height: screenWidth / 14,
+                      ),
+                      CustomRow(
+                        width: screenWidth,
+                        backgroundColor: Colors.grey.shade800,
+                        iconData: Icons.mail_rounded,
+                        customWidget: !isEditingModeOn
+                            ? GestureDetector(
+                                onTap: () async {
+                                  if (!isEditingModeOn) {
+                                    final url =
+                                        'mailto: ${widget.contact.email}';
+                                    if (await canLaunchUrlString(url)) {
+                                      await launchUrlString(url);
+                                    }
+                                  }
+                                },
+                                child: Text(
+                                  widget.contact.email,
+                                  style: TextStyle(
+                                    fontSize: screenWidth / 20,
+                                  ),
+                                ),
+                              )
+                            : TextField(
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: InputDecoration(
+                                  hintText: 'Email Address',
+                                ),
+                                onChanged: (value) {
+                                  setState(() {
+                                    widget.contact.email =
+                                        _emailController.text;
+                                  });
+                                },
                               ),
-                              onChanged: (value) {
-                                setState(() {
-                                  widget.contact.email = _emailController.text;
-                                });
-                              },
-                            ),
-                    ),
-                    SizedBox(
-                      height: screenWidth / 14,
-                    ),
-                    CustomRow(
-                      width: screenWidth,
-                      backgroundColor: Colors.yellow,
-                      iconData: Icons.message_rounded,
-                      customWidget: GestureDetector(
-                        onTap: () async {
-                          if (!isEditingModeOn) {
-                            final url = 'sms: ${widget.contact.mobile}';
-                            if (await canLaunchUrlString(url)) {
-                              await launchUrlString(url);
+                      ),
+                      SizedBox(
+                        height: screenWidth / 14,
+                      ),
+                      CustomRow(
+                        width: screenWidth,
+                        backgroundColor: Colors.yellow,
+                        iconData: Icons.message_rounded,
+                        customWidget: GestureDetector(
+                          onTap: () async {
+                            if (!isEditingModeOn) {
+                              final url = 'sms: ${widget.contact.mobile}';
+                              if (await canLaunchUrlString(url)) {
+                                await launchUrlString(url);
+                              }
                             }
-                          }
-                        },
-                        child: Text(
-                          'Send a Message',
-                          style: TextStyle(
-                            fontSize: screenWidth / 20,
+                          },
+                          child: Text(
+                            'Send a Message',
+                            style: TextStyle(
+                              fontSize: screenWidth / 20,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: screenWidth / 8,
-                    ),
-                    DeleteButton(
-                      screenWidth: screenWidth,
-                      screenHeight: screenHeight,
-                      onPressed: () => deleteContact(screenWidth),
-                    ),
-                  ],
+                      SizedBox(
+                        height: screenWidth / 8,
+                      ),
+                      DeleteButton(
+                        screenWidth: screenWidth,
+                        screenHeight: screenHeight,
+                        onPressed: () => deleteContact(screenWidth),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -108,7 +108,8 @@ class DbHandler {
   //get all contacts
   Future<List<Contact>> getAllContacts() async {
     Database db = await instance.database;
-    List<Map<String, dynamic>> maps = await db.query(table);
+    List<Map<String, dynamic>> maps =
+        await db.query(table, orderBy: '$colName ASC');
 
     return List.generate(
       maps.length,
