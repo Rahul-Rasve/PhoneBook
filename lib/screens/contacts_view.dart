@@ -117,8 +117,15 @@ class _ContactsPageState extends State<ContactsPage> {
                       Contact contact = contactList[index];
                       return CustomListView(
                         screenWidth: screenWidth,
-                        iconColor: Colors.white,
-                        iconData: Icons.star_border,
+                        iconColor:
+                            contact.isFav == 1 ? Colors.red : Colors.white,
+                        iconData: contact.isFav == 1
+                            ? Icons.star_sharp
+                            : Icons.star_border,
+                        onIconClicked: () async {
+                          contact.isFav = 1;
+                          await updateContactdata(contact);
+                        },
                         onItemClicked: () => Navigator.push(
                           context,
                           MaterialPageRoute(

@@ -64,7 +64,7 @@ class _AddContactState extends State<AddContact> {
     var rnd = Random().nextInt(0xFFFFFFFF);
     var uuid = rnd.toRadixString(16).padLeft(8, '0');
 
-    if(imagePath == null){
+    if (imagePath == null) {
       Fluttertoast.showToast(
         msg: 'Please Select a Profile Photo.',
         fontSize: screenWidth / 9,
@@ -72,8 +72,7 @@ class _AddContactState extends State<AddContact> {
       );
 
       return false;
-    }
-    else if (_nameController.text == '' ||
+    } else if (_nameController.text == '' ||
         _mobileController.text == '' ||
         _emailController.text == '') {
       Fluttertoast.showToast(
@@ -91,6 +90,7 @@ class _AddContactState extends State<AddContact> {
       name: _nameController.text,
       mobile: _mobileController.text,
       email: _emailController.text,
+      isFav: 0,
     );
 
     widget.addContactData!(contact);

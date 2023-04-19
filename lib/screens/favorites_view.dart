@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:phone_book/database/db_handler.dart';
 import 'package:phone_book/screens/contact_details.dart';
 import 'package:phone_book/userType/contact.dart';
@@ -16,7 +17,21 @@ class FavoritesPage extends StatefulWidget {
 }
 
 class _FavoritesPageState extends State<FavoritesPage> {
-  final List<Contact> favContactList = [];
+  List<Contact> favContactList = [];
+
+  @override
+  void initState() {
+    getFavContacts();
+    super.initState();
+  }
+
+  Future<void> getFavContacts() async {
+    List<Contact> favContacts = await DbHandler.instance.getFavContacts();
+
+    setState(() {
+      favContactList = favContacts;
+    });
+  }
 
   //get perticular index contact
   void onItemClicked(int index) async {
@@ -90,6 +105,16 @@ class _FavoritesPageState extends State<FavoritesPage> {
                         iconData: Icons.delete_rounded,
                         iconColor: Colors.white,
                         onItemClicked: () => onItemClicked(index),
+                        onIconClicked: () async {
+                          contact.isFav = 0;
+                          Fluttertoast.showToast(
+                            msg: '${contact.name} removed from Favorites',
+                            fontSize: screenWidth / 9,
+                            toastLength: Toast.LENGTH_LONG,
+                          );
+                          await DbHandler.instance.update(contact);
+                          initState();
+                        },
                         contact: contact,
                       );
                     }),

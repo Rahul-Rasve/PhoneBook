@@ -4,6 +4,7 @@ class Contact {
   String name;
   String mobile;
   String email;
+  int isFav;
 
   Contact({
     required this.id,
@@ -11,15 +12,17 @@ class Contact {
     required this.name,
     required this.mobile,
     required this.email,
+    required this.isFav,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'id' : id,
+      'id': id,
       'photo': photoUrl,
       'name': name,
       'mobile': mobile,
       'email': email,
+      'isfav': isFav,
     };
   }
 
@@ -30,6 +33,7 @@ class Contact {
       name: map['name'],
       mobile: map['mobile'],
       email: map['email'],
+      isFav: map['isfav'],
     );
   }
 }

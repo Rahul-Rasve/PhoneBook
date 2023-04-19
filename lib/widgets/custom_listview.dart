@@ -13,6 +13,7 @@ class CustomListView extends StatelessWidget {
     required this.iconData,
     required this.iconColor,
     required this.onItemClicked,
+    required this.onIconClicked,
     required this.contact,
   });
 
@@ -20,6 +21,7 @@ class CustomListView extends StatelessWidget {
   final IconData iconData;
   final Color iconColor;
   final VoidCallback onItemClicked;
+  final VoidCallback onIconClicked;
   final Contact contact;
 
   @override
@@ -71,7 +73,11 @@ class CustomListView extends StatelessWidget {
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
               radius: 40,
-              onTap: () {}, //TODO: add contact to favourites
+              onTap: onIconClicked,
+              // {
+              //   contact.isFav = 1;
+              //   updateContact!(contact);
+              // },
               splashColor: Colors.grey.withOpacity(0.3),
               child: Icon(
                 iconData,

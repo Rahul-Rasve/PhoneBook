@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:phone_book/userType/contact.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -16,6 +17,7 @@ class DbHandler {
   static const colName = 'name';
   static const colMobile = 'mobile';
   static const colEmail = 'email';
+  static const colIsFav = 'isfav';
 
   static Database? _db;
 
@@ -45,10 +47,11 @@ class DbHandler {
         $colPhoto VARCHAR,
         $colName VARCHAR,
         $colMobile VARCHAR(10),
-        $colEmail VARCHAR
+        $colEmail VARCHAR,
+        $colIsFav INTEGER(1)
       );
     ''');
-    print('database created');
+    debugPrint('database created');
   }
 
   //handler methods
@@ -58,8 +61,8 @@ class DbHandler {
     try {
       Database db = await instance.database;
       await db.insert(table, contact.toMap());
-    } on Exception catch (_) {
-      print('error in database insertion');
+    } on Exception catch (e) {
+      debugPrint('error in database insertion : ${e.toString()}');
     }
   }
 
@@ -73,7 +76,7 @@ class DbHandler {
         whereArgs: [id],
       );
     } catch (e) {
-      print('error in deleting contact');
+      debugPrint('error in deleting contact : ${e.toString()}');
     }
   }
 
@@ -88,7 +91,7 @@ class DbHandler {
         whereArgs: [contact.id],
       );
     } catch (e) {
-      print('error in updating');
+      debugPrint('error in updating : ${e.toString()}');
     }
   }
 
@@ -110,6 +113,22 @@ class DbHandler {
     Database db = await instance.database;
     List<Map<String, dynamic>> maps =
         await db.query(table, orderBy: '$colName ASC');
+
+    return List.generate(
+      maps.length,
+      (index) => Contact.fromMap(maps[index]),
+    );
+  }
+
+  //get favorite cantacts
+  Future<List<Contact>> getFavContacts() async {
+    Database db = await instance.database;
+    List<Map<String, dynamic>> maps = await db.query(
+      table,
+      where: '$colIsFav = ?',
+      whereArgs: [1],
+      orderBy: '$colName ASC',
+    );
 
     return List.generate(
       maps.length,
