@@ -7,7 +7,6 @@ import 'package:phone_book/screens/contact_details.dart';
 import 'package:phone_book/userType/contact.dart';
 import 'package:phone_book/utils/contants.dart';
 import 'package:phone_book/widgets/custom_listview.dart';
-import 'package:phone_book/widgets/icons.dart';
 
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
@@ -62,10 +61,14 @@ class _FavoritesPageState extends State<FavoritesPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButtons(
-                screenHeight: screenHeight,
-                onPressed: () {},
-                icon: Icons.manage_search_rounded,
+              // IconButtons(
+              //   screenHeight: screenHeight,
+              //   onPressed: () {},
+              //   icon: Icons.manage_search_rounded,
+              // ),
+              SizedBox(
+                width: screenWidth / 8,
+                height: screenWidth / 8.5,
               ),
               Text(
                 'Favourites',

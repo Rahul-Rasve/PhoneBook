@@ -8,6 +8,11 @@ import 'package:phone_book/userType/contact.dart';
 import 'package:phone_book/utils/contants.dart';
 import 'package:phone_book/widgets/custom_listview.dart';
 import 'package:phone_book/widgets/icons.dart';
+import 'package:phone_book/widgets/text_input.dart';
+
+var isSearchOn = false;
+
+//TODO: check the logs in debug console for search function
 
 class ContactsPage extends StatefulWidget {
   const ContactsPage({
@@ -20,11 +25,32 @@ class ContactsPage extends StatefulWidget {
 
 class _ContactsPageState extends State<ContactsPage> {
   List<Contact> contactList = [];
+  List<Contact> searchList = [];
+
+  final searchController = TextEditingController();
 
   @override
   void initState() {
     getAllContacts();
     super.initState();
+  }
+
+  void searchFilter(String keywords) {
+    if (keywords.isNotEmpty) {
+      setState(() {
+        searchList = contactList
+            .where(
+              (element) => element.name.toLowerCase().startsWith(
+                    keywords.toLowerCase(),
+                  ),
+            )
+            .toList();
+      });
+    } else {
+      setState(() {
+        searchList = contactList;
+      });
+    }
   }
 
   Future<void> addContactData(Contact contact) async {
@@ -66,26 +92,64 @@ class _ContactsPageState extends State<ContactsPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButtons(
-                screenHeight: screenHeight,
-                onPressed: () {},
-                icon: Icons.manage_search_rounded,
-              ),
-              Text(
-                'Phone',
-                style: TextStyle(fontSize: screenHeight / 40),
-              ),
+              isSearchOn
+                  ? IconButtons(
+                      //cancel search button
+                      screenHeight: screenHeight,
+                      onPressed: () {
+                        setState(() {
+                          searchList.clear();
+                          isSearchOn = false;
+                          getAllContacts();
+                        });
+                      },
+                      icon: Icons.cancel_outlined,
+                    )
+                  : IconButtons(
+                      screenHeight: screenHeight,
+                      onPressed: () {
+                        setState(() {
+                          isSearchOn = true;
+                          searchList = contactList;
+                        });
+                      },
+                      icon: Icons.manage_search_rounded,
+                    ),
+              !isSearchOn
+                  ? Text(
+                      'Phone',
+                      style: TextStyle(fontSize: screenHeight / 40),
+                    )
+                  : SearchTextField(
+                      searchController: searchController,
+                      screenWidth: screenWidth,
+                      onChanged: (value) => searchFilter(value),
+                      onSubmitted: (value) {
+                        setState(() {
+                          searchFilter(value);
+                          FocusScope.of(context).unfocus();
+                        });
+                      },
+                      onTapOutSide: (event) {
+                        setState(() {
+                          FocusScope.of(context).unfocus();
+                          isSearchOn = false;
+                        });
+                      },
+                    ),
               IconButtons(
                 icon: Icons.person_add_rounded,
-                onPressed: () async {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AddContact(
-                        addContactData: addContactData,
+                onPressed: () {
+                  if (!isSearchOn) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddContact(
+                          addContactData: addContactData,
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  }
                 },
                 screenHeight: screenHeight,
               ),
@@ -111,10 +175,12 @@ class _ContactsPageState extends State<ContactsPage> {
                     ),
                   )
                 : ListView.separated(
-                    itemCount: contactList.length,
+                    itemCount:
+                        isSearchOn ? searchList.length : contactList.length,
                     physics: BouncingScrollPhysics(),
                     itemBuilder: ((context, index) {
-                      Contact contact = contactList[index];
+                      Contact contact =
+                          isSearchOn ? searchList[index] : contactList[index];
                       return CustomListView(
                         screenWidth: screenWidth,
                         iconColor:
