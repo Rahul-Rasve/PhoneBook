@@ -116,7 +116,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                             toastLength: Toast.LENGTH_LONG,
                           );
                           await DbHandler.instance.update(contact);
-                          initState();
+                          await getFavContacts();
                         },
                         contact: contact,
                       );

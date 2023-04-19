@@ -9,14 +9,12 @@ class SearchTextField extends StatelessWidget {
     required this.screenWidth,
     required this.onSubmitted,
     required this.onChanged,
-    required this.onTapOutSide,
     required this.searchController,
   });
 
   final double screenWidth;
   final Function(String) onSubmitted;
   final Function(String) onChanged;
-  final Function(PointerDownEvent) onTapOutSide;
   final TextEditingController searchController;
 
   @override
@@ -27,7 +25,9 @@ class SearchTextField extends StatelessWidget {
         enableInteractiveSelection: true,
         onChanged: onChanged,
         onSubmitted: onSubmitted,
-        onTapOutside: onTapOutSide,
+        onTapOutside: (event) {
+          FocusScope.of(context).unfocus();
+        },
         controller: searchController,
         cursorColor: Colors.white,
         textAlign: TextAlign.center,

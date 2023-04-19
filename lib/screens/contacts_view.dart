@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:phone_book/database/db_handler.dart';
 import 'package:phone_book/screens/add_contact.dart';
 import 'package:phone_book/screens/contact_details.dart';
@@ -11,8 +12,6 @@ import 'package:phone_book/widgets/icons.dart';
 import 'package:phone_book/widgets/text_input.dart';
 
 var isSearchOn = false;
-
-//TODO: check the logs in debug console for search function
 
 class ContactsPage extends StatefulWidget {
   const ContactsPage({
@@ -31,8 +30,8 @@ class _ContactsPageState extends State<ContactsPage> {
 
   @override
   void initState() {
-    getAllContacts();
     super.initState();
+    getAllContacts();
   }
 
   void searchFilter(String keywords) {
@@ -92,29 +91,25 @@ class _ContactsPageState extends State<ContactsPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              isSearchOn
-                  ? IconButtons(
-                      //cancel search button
-                      screenHeight: screenHeight,
-                      onPressed: () {
-                        setState(() {
-                          searchList.clear();
-                          isSearchOn = false;
-                          getAllContacts();
-                        });
-                      },
-                      icon: Icons.cancel_outlined,
-                    )
-                  : IconButtons(
-                      screenHeight: screenHeight,
-                      onPressed: () {
-                        setState(() {
-                          isSearchOn = true;
-                          searchList = contactList;
-                        });
-                      },
-                      icon: Icons.manage_search_rounded,
-                    ),
+              IconButtons(
+                screenHeight: screenHeight,
+                onPressed: () async {
+                  setState(() {
+                    if (!isSearchOn) {
+                      searchList = contactList;
+                      isSearchOn = true;
+                    } else {
+                      searchList.clear();
+                      searchController.clear(); //clear the 'value' of textFeild
+                      isSearchOn = false;
+                    }
+                  });
+                  await getAllContacts();
+                },
+                icon: isSearchOn
+                    ? Icons.cancel_outlined
+                    : Icons.manage_search_rounded,
+              ),
               !isSearchOn
                   ? Text(
                       'Phone',
@@ -128,12 +123,13 @@ class _ContactsPageState extends State<ContactsPage> {
                         setState(() {
                           searchFilter(value);
                           FocusScope.of(context).unfocus();
-                        });
-                      },
-                      onTapOutSide: (event) {
-                        setState(() {
-                          FocusScope.of(context).unfocus();
-                          isSearchOn = false;
+                          if (searchList.isEmpty) {
+                            Fluttertoast.showToast(
+                              msg: 'No Contact Found!',
+                              fontSize: screenWidth / 9,
+                              toastLength: Toast.LENGTH_LONG,
+                            );
+                          }
                         });
                       },
                     ),
@@ -222,6 +218,3 @@ class _ContactsPageState extends State<ContactsPage> {
     );
   }
 }
-
-
-//TODO: add the stared contacts to favourites view
