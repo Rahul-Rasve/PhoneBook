@@ -85,10 +85,24 @@ class _ProfilePageState extends State<ProfilePage> {
   void saveParentData() async {
     final sharedPreference = await SharedPreferences.getInstance();
 
-    await sharedPreference.setString('photo', imagePath!);
-    await sharedPreference.setString('name', _nameController.text);
-    await sharedPreference.setString('mobile', _mobileController.text);
-    await sharedPreference.setString('email', _emailController.text);
+    if (_nameController.text.isEmpty ||
+        _mobileController.text.isEmpty ||
+        _emailController.text.isEmpty) {
+      Fluttertoast.showToast(
+        msg: 'Something is missing...',
+        toastLength: Toast.LENGTH_LONG,
+      );
+    } else if (_mobileController.text.length != 10) {
+      Fluttertoast.showToast(
+        msg: 'Inappropriate mobile number.',
+        toastLength: Toast.LENGTH_LONG,
+      );
+    } else {
+      await sharedPreference.setString('photo', imagePath!);
+      await sharedPreference.setString('name', _nameController.text);
+      await sharedPreference.setString('mobile', _mobileController.text);
+      await sharedPreference.setString('email', _emailController.text);
+    }
   }
 
   @override
