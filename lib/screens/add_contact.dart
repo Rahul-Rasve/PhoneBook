@@ -82,6 +82,12 @@ class _AddContactState extends State<AddContact> {
       );
 
       return false;
+    } else if (_mobileController.text.length > 10) {
+      Fluttertoast.showToast(
+        msg: 'Mobile number is inappropriate.',
+        fontSize: screenWidth / 9,
+        toastLength: Toast.LENGTH_LONG,
+      );
     }
 
     Contact contact = Contact(
