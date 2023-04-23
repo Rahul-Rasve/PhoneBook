@@ -67,7 +67,7 @@ class _AddContactState extends State<AddContact> {
     if (imagePath == null) {
       Fluttertoast.showToast(
         msg: 'Please Select a Profile Photo.',
-        fontSize: screenWidth / 9,
+        fontSize: screenWidth / 28,
         toastLength: Toast.LENGTH_LONG,
       );
 
@@ -77,7 +77,7 @@ class _AddContactState extends State<AddContact> {
         _emailController.text == '') {
       Fluttertoast.showToast(
         msg: 'Something is missing...',
-        fontSize: screenWidth / 9,
+        fontSize: screenWidth / 28,
         toastLength: Toast.LENGTH_LONG,
       );
 
@@ -85,7 +85,7 @@ class _AddContactState extends State<AddContact> {
     } else if (_mobileController.text.length > 10) {
       Fluttertoast.showToast(
         msg: 'Mobile number is inappropriate.',
-        fontSize: screenWidth / 9,
+        fontSize: screenWidth / 28,
         toastLength: Toast.LENGTH_LONG,
       );
     }
@@ -140,7 +140,8 @@ class _AddContactState extends State<AddContact> {
                       if (await saveContactData(screenWidth)) {
                         Fluttertoast.showToast(
                           msg: 'Contact ${_nameController.text} saved!',
-                          fontSize: screenWidth / 9,
+                          gravity: ToastGravity.CENTER,
+                          fontSize: screenWidth / 28,
                           toastLength: Toast.LENGTH_LONG,
                         );
                         if (context.mounted) Navigator.pop(context, true);

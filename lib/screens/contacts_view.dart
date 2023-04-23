@@ -126,7 +126,8 @@ class _ContactsPageState extends State<ContactsPage> {
                           if (searchList.isEmpty) {
                             Fluttertoast.showToast(
                               msg: 'No Contact Found!',
-                              fontSize: screenWidth / 9,
+                              gravity: ToastGravity.CENTER,
+                              fontSize: screenWidth / 28,
                               toastLength: Toast.LENGTH_LONG,
                             );
                           }

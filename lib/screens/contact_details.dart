@@ -77,7 +77,7 @@ class _ContactDetailsState extends State<ContactDetails> {
         _emailController.text == '') {
       Fluttertoast.showToast(
         msg: 'Something is missing...',
-        fontSize: screenWidth / 9,
+        fontSize: screenWidth / 28,
         toastLength: Toast.LENGTH_LONG,
       );
       return false;
@@ -143,7 +143,8 @@ class _ContactDetailsState extends State<ContactDetails> {
                       if (isEditingModeOn && updateContact(screenWidth)) {
                         Fluttertoast.showToast(
                           msg: 'Contact ${widget.contact.name} Updated!',
-                          fontSize: screenWidth / 9,
+                          gravity: ToastGravity.CENTER,
+                          fontSize: screenWidth / 28,
                         );
                         setState(() {
                           isEditingModeOn = false;
@@ -160,10 +161,10 @@ class _ContactDetailsState extends State<ContactDetails> {
               ),
             ),
             Expanded(
-              child: SingleChildScrollView(
-                child: Container(
-                  padding: profilePadding(screenWidth),
-                  decoration: profileBoxDecoration(screenWidth),
+              child: Container(
+                padding: profilePadding(screenWidth),
+                decoration: profileBoxDecoration(screenWidth),
+                child: SingleChildScrollView(
                   child: Column(
                     children: [
                       ProfileImage(
@@ -252,10 +253,12 @@ class _ContactDetailsState extends State<ContactDetails> {
                                     }
                                   }
                                 },
-                                child: Text(
-                                  widget.contact.email,
-                                  style: TextStyle(
-                                    fontSize: screenWidth / 20,
+                                child: FittedBox(
+                                  child: Text(
+                                    widget.contact.email,
+                                    style: TextStyle(
+                                      fontSize: screenWidth / 20,
+                                    ),
                                   ),
                                 ),
                               )
@@ -278,7 +281,7 @@ class _ContactDetailsState extends State<ContactDetails> {
                       ),
                       CustomRow(
                         width: screenWidth,
-                        backgroundColor: Colors.yellow,
+                        backgroundColor: Colors.yellow.shade600,
                         iconData: Icons.message_rounded,
                         customWidget: GestureDetector(
                           onTap: () async {

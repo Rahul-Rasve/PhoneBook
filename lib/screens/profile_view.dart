@@ -95,7 +95,7 @@ class _ProfilePageState extends State<ProfilePage> {
     } else if (_mobileController.text.length != 10) {
       Fluttertoast.showToast(
         msg: 'Inappropriate mobile number.',
-        toastLength: Toast.LENGTH_LONG,
+        toastLength: Toast.LENGTH_SHORT,
       );
     } else {
       await sharedPreference.setString('photo', imagePath!);
@@ -224,9 +224,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               });
                             },
                           )
-                        : Text(
-                            _emailController.text,
-                            style: TextStyle(fontSize: screenWidth / 20),
+                        : FittedBox(
+                            child: Text(
+                              _emailController.text,
+                              style: TextStyle(fontSize: screenWidth / 20),
+                            ),
                           ),
                   ),
                 ],

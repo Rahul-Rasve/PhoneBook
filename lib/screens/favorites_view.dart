@@ -61,11 +61,6 @@ class _FavoritesPageState extends State<FavoritesPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // IconButtons(
-              //   screenHeight: screenHeight,
-              //   onPressed: () {},
-              //   icon: Icons.manage_search_rounded,
-              // ),
               SizedBox(
                 width: screenWidth / 8,
                 height: screenWidth / 8.5,
@@ -112,7 +107,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
                           contact.isFav = 0;
                           Fluttertoast.showToast(
                             msg: '${contact.name} removed from Favorites',
-                            fontSize: screenWidth / 9,
+                            gravity: ToastGravity.CENTER,
+                            fontSize: screenWidth / 28,
                             toastLength: Toast.LENGTH_LONG,
                           );
                           await DbHandler.instance.update(contact);

@@ -23,6 +23,7 @@ class CustomRow extends StatefulWidget {
 class _CustomRowState extends State<CustomRow> {
   @override
   Widget build(BuildContext context) {
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -55,23 +56,3 @@ class _CustomRowState extends State<CustomRow> {
     );
   }
 }
-
-
-// !isEditingMode
-//             ? Text(
-//                 widget.text,
-//                 style: TextStyle(fontSize: widget.width / 20),
-//               )
-//             : TextField(
-//                 autofocus: true,
-//                 onSubmitted: (value) {
-//                   setState(() {
-//                     isEditingMode = false;
-//                     widget.text = value;
-//                   });
-//                 },
-//                 keyboardType: widget.inputType,
-//                 decoration: InputDecoration(
-//                   hintText: widget.hintText,
-//                 ),
-//               ),

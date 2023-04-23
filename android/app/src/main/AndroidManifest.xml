@@ -20,7 +20,7 @@
 
    <application
         android:usesCleartextTraffic="true"
-        android:label="phone_book"
+        android:label="PhoneBook"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
