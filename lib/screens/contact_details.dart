@@ -47,6 +47,14 @@ class _ContactDetailsState extends State<ContactDetails> {
     _emailController.text = widget.contact.email;
   }
 
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _mobileController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
+
   Future<void> pickImage() async {
     if (isEditingModeOn) {
       final pickedFile = await ImagePicker().pickImage(
@@ -57,6 +65,7 @@ class _ContactDetailsState extends State<ContactDetails> {
         setState(() {
           imageFile = File(pickedFile.path);
           imagePath = pickedFile.path;
+          widget.contact.photoUrl = imagePath!;
         });
       } else {
         Fluttertoast.showToast(
@@ -70,8 +79,6 @@ class _ContactDetailsState extends State<ContactDetails> {
   }
 
   bool updateContact(double screenWidth) {
-    widget.contact.photoUrl = imagePath!;
-
     if (_nameController.text == '' ||
         _mobileController.text == '' ||
         _emailController.text == '') {
@@ -80,6 +87,15 @@ class _ContactDetailsState extends State<ContactDetails> {
         fontSize: screenWidth / 28,
         toastLength: Toast.LENGTH_LONG,
       );
+
+      return false;
+    } else if (_mobileController.text.length != 10) {
+      Fluttertoast.showToast(
+        msg: 'Mobile number is inappropriate.',
+        fontSize: screenWidth / 28,
+        toastLength: Toast.LENGTH_LONG,
+      );
+
       return false;
     }
 
