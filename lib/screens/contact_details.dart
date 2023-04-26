@@ -114,6 +114,11 @@ class _ContactDetailsState extends State<ContactDetails> {
             onOkPressed: () {
               widget.deleteContactData!(widget.contact.id);
               Navigator.popUntil(context, (route) => route.isFirst);
+              Fluttertoast.showToast(
+                msg: 'Contact ${widget.contact.name} Deleted!',
+                fontSize: screenWidth / 28,
+                toastLength: Toast.LENGTH_LONG,
+              );
             },
           );
         },

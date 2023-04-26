@@ -108,6 +108,15 @@ class DbHandler {
     return Contact.fromMap(maps.first);
   }
 
+  //check for duplicate
+  Future<bool> checkForDuplicate(String name) async {
+    Database db = await instance.database;
+
+    final List<Map<String, dynamic>> duplicate = await db.query(table, where: '$colName = ?', whereArgs: [name]);
+
+    return duplicate.isEmpty;
+  }
+
   //get all contacts
   Future<List<Contact>> getAllContacts() async {
     Database db = await instance.database;

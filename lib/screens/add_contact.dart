@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:phone_book/database/db_handler.dart';
 import 'package:phone_book/userType/contact.dart';
 import 'package:phone_book/utils/contants.dart';
 import 'package:phone_book/widgets/custom_row.dart';
@@ -15,7 +16,7 @@ import 'package:phone_book/widgets/profile_page_components.dart';
 class AddContact extends StatefulWidget {
   final Future<void> Function(Contact contact)? addContactData;
 
-  const AddContact({super.key, this.addContactData});
+  const AddContact({super.key, this.addContactData,});
 
   @override
   State<AddContact> createState() => _AddContactState();
@@ -64,6 +65,15 @@ class _AddContactState extends State<AddContact> {
     var rnd = Random().nextInt(0xFFFFFFFF);
     var uuid = rnd.toRadixString(16).padLeft(8, '0');
 
+    Contact contact = Contact(
+      id: uuid,
+      photoUrl: imagePath!,
+      name: _nameController.text,
+      mobile: _mobileController.text,
+      email: _emailController.text,
+      isFav: 0,
+    );
+
     if (imagePath == null) {
       Fluttertoast.showToast(
         msg: 'Please Select a Profile Photo.',
@@ -90,16 +100,16 @@ class _AddContactState extends State<AddContact> {
       );
 
       return false;
-    }
+    } else if (!await DbHandler.instance
+        .checkForDuplicate(_nameController.text)) {
+      Fluttertoast.showToast(
+        msg: 'Contact already exists!',
+        fontSize: screenWidth / 28,
+        toastLength: Toast.LENGTH_LONG,
+      );
 
-    Contact contact = Contact(
-      id: uuid,
-      photoUrl: imagePath!,
-      name: _nameController.text,
-      mobile: _mobileController.text,
-      email: _emailController.text,
-      isFav: 0,
-    );
+      return false;
+    }
 
     widget.addContactData!(contact);
 
